@@ -2,67 +2,101 @@ from PIL import Image,ImageDraw
 import colorsys
 import numpy as np
 import copy
+import math
 from scipy.spatial.transform import Rotation as R
 
 def run():
     srcFile = Image.open("assets/creeper.png")
 
-    left=   (np.array([0,0,0]), np.array([0,1,0]))
-    bottom= (np.array([0,0,0]), np.array([1,0,0]))
-    right=  (np.array([1,0,0]), np.array([0,1,0]))
-    top=    (np.array([0,1,0]), np.array([1,0,0]))
+    idX = (np.array([0,0,0]), np.array([1,0,0]))
+    idY = (np.array([0,0,0]), np.array([0,1,0]))
+    idZ = (np.array([0,0,0]), np.array([0,0,1]))
 
-    orgvecs = [left,bottom,right,top]
+    x2y = (np.array([1,0,0]), np.array([0,1,0]))
+    x2z = (np.array([1,0,0]), np.array([0,0,1]))
+
+    y2x = (np.array([0,1,0]), np.array([1,0,0]))
+    y2z = (np.array([0,1,0]), np.array([0,0,1]))
+
+    z2x = (np.array([0,0,1]), np.array([1,0,0]))
+    z2y = (np.array([0,0,1]), np.array([0,1,0]))
+
+    xy2z = (np.array([1,1,0]), np.array([0,0,1]))
+    xz2y = (np.array([1,0,1]), np.array([0,1,0]))
+    yz2x = (np.array([0,1,1]), np.array([1,0,0]))
+
+    #orgvecs = [idX,idY,idZ,x2y,x2z,y2x,y2z,z2x,z2y,xy2z,xz2y,yz2x]
+    orgvecs = [idX,idY,x2y,x2z,y2x,y2z,xy2z,xz2y,yz2x]
+    vecNames = "idX,idY,x2y,x2z,y2x,y2z,xy2z,xz2y,yz2x".split(",")
+
     vecs = copy.deepcopy(orgvecs)
 
     r = R.from_euler('y', 45, degrees=True)
     r = R.from_euler('x', -30, degrees=True)*r
 
-    print(r.as_matrix())
+    rotM = r.as_matrix()
+    scaleM = np.identity(3)*(1/math.sqrt(2)*3/4)
+    fM = scaleM @ rotM
 
+    offset = np.array([0.13,0.24,0]) #trial and errored
 
-    mxL = np.array([
-        np.xyR
-        [ 24/64, 0    ],
-        [-12/64, 28/64]
-    ])
-    trL = np.array([
-        1/2 - 24/64,
-        16.5/64
-    ])
+    invM = np.linalg.inv(fM)
+    beamVecs = [0 for _ in range(17*17)]
+    for x in range(17):
+        for y in range(17):
+            beamVecs[x+y*17] = (np.array([x,y,-10]), np.array([0,0,100]))
+            
 
-    mxR = np.array([
-        [ 24/64, 0    ],
-        [ 12/64, 28/64]
-    ])
-    trR = np.array([
-        32/64,
-        16.5/64-12/64
-    ])
-
-    mxT = np.array([
-        [ 24/64, 24/64],
-        [-12/64, 12/64]
-    ])
-    trT = np.array([
-        1/2 - 24/64,
-        16.5/64+28/64
-    ])
-
-
-    leftBox = withTransform(vecs, transform=mxL, offset=trL)
-    vecDraw = drawVectors(64, leftBox)
     
-    rightBox = withTransform(vecs, transform=mxR, offset=trR)
-    vecDraw = drawVectors(64, rightBox, img=vecDraw, hue=40)
+    print(fM)
+    print(invM)
 
-    topBox = withTransform(vecs, transform=mxT, offset=trT)
-    vecDraw = drawVectors(64, topBox, img=vecDraw, hue=80)
+    transfVecs = withTransform(vecs, transform=fM, offset=offset)
 
+    pixels = 16*4
+    vecDraw = drawVectors(pixels, transfVecs)
+    
+    #rightBox = withTransform(vecs, transform=mxR, offset=trR)
+    #vecDraw = drawVectors(64, rightBox, img=vecDraw, hue=40)
 
-    vecDraw.save("vec.png")
+    #topBox = withTransform(vecs, transform=mxT, offset=trT)
+    #vecDraw = drawVectors(64, topBox, img=vecDraw, hue=80)
+
+    imgZoom = (64*3)//pixels
+    
+    shouldRender = Image.open(f"assets/white_head_mc_{pixels}.png")
+    shouldRender.resize((pixels*imgZoom,pixels*imgZoom),Image.NEAREST).save(f"out/_vanilla{pixels}.png")
+
+    prend = np.asarray(vecDraw)
+    vrend = np.asarray(shouldRender)
+    diff = vrend+prend
+    diffDraw = Image.fromarray(diff)
+
+    diffDraw = diffDraw.resize((pixels*imgZoom,pixels*imgZoom),Image.NEAREST)
+    diffDraw.save(f"out/diff{pixels}.png")
+    
+    vecDraw.save(f"out/unscaled{pixels}.png")
+    vecDraw = vecDraw.resize((pixels*imgZoom,pixels*imgZoom),Image.NEAREST)
+    vecDraw.save(f"out/render{pixels}.png")
+
+def getBestPlaneCollition(vecs, vecNames):
+    lPlaneBaseVecs = [vecs[vecNames.index(x)] for x in ["idX","idY"]]
+    rPlaneBaseVecs = [vecs[vecNames.index(x)] for x in ["x2y","x2z"]]
+    tPlaneBaseVecs = [vecs[vecNames.index(x)] for x in ["y2x","y2z"]]
+
+def shrink(n,fnum):
+    ret = fnum
+    for x in range(n):
+        ret = math.nextafter(ret,-math.inf)
+    return ret
 
 def withTransform(vectup: [(np.array,np.array)], transform=None, offset=None):
+    try: 
+        if(offset == None):
+            offset = np.array([0,0,0])
+    except:
+        ""
+
     vecs = copy.deepcopy(vectup)
     for i,(org,v) in enumerate(vecs):
         v = np.matmul(transform,v)
@@ -83,10 +117,9 @@ def drawVectors(size, vectors: [(np.array,np.array)], hue=0, img=None):
 
     s = size
     x = hue
+    x += 10
 
     for (org,v) in vectors:
-        print(org,v)
-
         draw.line((
                 s*org[0],
                 s-s*org[1],
@@ -96,7 +129,7 @@ def drawVectors(size, vectors: [(np.array,np.array)], hue=0, img=None):
             fill=f"hsl({x}, 100%, 50%)",
             width=1
         )
-        x = (x+6)%100
+        x = (x+33)%256
 
     return render
 
@@ -124,5 +157,14 @@ def makeSkullRender(inptex: Image) -> Image:
     #skullRender.show()
     
     return draw
+
+def LinePlaneCollision(planeNormal, planePoint, rayDirection, rayPoint, epsilon=1e-6):
+    ndotu = planeNormal.dot(rayDirection)
+    if abs(ndotu) < epsilon:
+	    raise RuntimeError("no intersection or line is within plane")
+    w = rayPoint - planePoint
+    si = -planeNormal.dot(w) / ndotu
+    Psi = w + si * rayDirection + planePoint
+    return Psi
 
 run()
