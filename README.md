@@ -13,7 +13,7 @@ Useful as GUI buttons for plugins.
 2. Have python 3 installed
 3. Open CMD in same directory as skullify.py and type:
 ```python skullify.py <relative path to file you want to skullify>```
-the program will create a folder which outputs the skins
+the program will create a folder named "out" where the finished skin textures as dumped
 
 If you don't know how to get high resolution skulls into minecraft check this guide out:
 https://www.reddit.com/r/Minecraft/comments/aqlzis/how_to_get_hd_heads/
