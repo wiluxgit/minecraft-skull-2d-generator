@@ -1,3 +1,5 @@
+Source: https://github.com/OscarDahlqvist/minecraft-skull-2d-generator
+
 How to use
 1. Have python 3 installed
 2. Know how to install python dependencies

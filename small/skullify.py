@@ -51,7 +51,6 @@ def run():
             "U": 0.914,
             "D": 0 #not actually 0 but not visible
         }
-        #print(v)
 
         for x,y in outputList:
             face = getFace(x,y)
