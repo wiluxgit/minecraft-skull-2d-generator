@@ -3,8 +3,11 @@ Uses some projection and shading tricks to render flat 2d textures on a player h
 Useful as GUI buttons for plugins.
 
 ![image](https://user-images.githubusercontent.com/70565775/117182379-8facb880-add6-11eb-9ec4-c2a6b4e730c1.png)
-![image](https://user-images.githubusercontent.com/70565775/117183500-e8c91c00-add7-11eb-9b08-743d41f2376b.png)
+
 ![image](https://user-images.githubusercontent.com/70565775/117182534-c1258400-add6-11eb-872e-06fb99bb5621.png)
+
+![image](https://user-images.githubusercontent.com/70565775/117184259-d26f9000-add8-11eb-993b-e3f08417ec26.png)
+
 
 ## How to use
 1. Download the whole repo or just the folder named "small"
