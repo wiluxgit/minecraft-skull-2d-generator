@@ -6,7 +6,7 @@ Useful as GUI buttons for plugins.
 
 ![image](https://user-images.githubusercontent.com/70565775/117184259-d26f9000-add8-11eb-993b-e3f08417ec26.png)
 
-![image](https://user-images.githubusercontent.com/70565775/117182534-c1258400-add6-11eb-872e-06fb99bb5621.png)
+![image](https://user-images.githubusercontent.com/70565775/117184500-18c4ef00-add9-11eb-86fb-67e063fe7754.png)
 
 ## How to use
 1. Download the whole repo or just the folder named "small"
