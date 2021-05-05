@@ -1,5 +1,5 @@
-# minecraft-skull-2d-generator
-Uses some projection and shading tricks to render flat 2d textures on a player head without resourcepacks
+# Skullify
+Uses some projection and shading tricks to render flat 2d textures on a player head without resourcepacks. Mainly useful for plugins as GUI buttons.
 ![image](https://user-images.githubusercontent.com/70565775/117182379-8facb880-add6-11eb-9ec4-c2a6b4e730c1.png)
 
 ![image](https://user-images.githubusercontent.com/70565775/117182534-c1258400-add6-11eb-872e-06fb99bb5621.png)
