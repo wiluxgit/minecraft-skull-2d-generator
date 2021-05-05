@@ -1,5 +1,5 @@
 # Skullify
-Uses some projection and shading tricks to render flat 2d textures on a player head without resourcepacks. 
+Uses some projection and shading tricks to render flat 2d textures on a player head **without resourcepacks**. 
 Useful as GUI buttons for plugins.
 
 ![image](https://user-images.githubusercontent.com/70565775/117182379-8facb880-add6-11eb-9ec4-c2a6b4e730c1.png)
