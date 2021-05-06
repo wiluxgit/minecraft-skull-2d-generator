@@ -57,7 +57,7 @@ def run():
             vModifier = faceBrightnessModifier[face]
             nv = v/vModifier
             if nv > 1.001:
-                raise Exception(f"(x,y)={loc} is too bright, max V is {vModifier*100}% in HSV")
+                raise Exception(f"(x,y)={loc} is too bright, max V for this location is {vModifier*100}% in HSV")
             nv = min(nv,1)
             (nr,ng,nb) = colorsys.hsv_to_rgb(h, s, nv)
 
